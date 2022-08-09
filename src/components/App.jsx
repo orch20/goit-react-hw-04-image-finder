@@ -3,6 +3,7 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { Loader } from './Loader/Loader';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
+import { Modal } from './Modal/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import { imageService } from '../services/serviceApi.js';
 import styled from 'styled-components';
@@ -14,6 +15,9 @@ export class App extends Component {
     images: [],
     isLoading: false,
     isVisible: false,
+    isModal: false,
+    modalURL: '',
+    modalAlt: '',
   };
 
   componentDidUpdate(_, prevState) {
@@ -26,8 +30,7 @@ export class App extends Component {
     this.setState({ isLoading: true });
     try {
       const { hits, totalHits } = await imageService(query, page);
-      console.log('hits', totalHits);
-      console.log('page', page);
+
       if (hits.length === 0) {
         toast.warn('Wrong query!', { autoClose: 3000 });
       }
@@ -64,16 +67,40 @@ export class App extends Component {
     }));
   };
 
+  openModal = (url, tag) => {
+    this.setState({
+      isModal: true,
+      modalURL: { url },
+      modalAlt: { tag },
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      isModal: false,
+    });
+  };
+
   render() {
-    const { isLoading, images, isVisible, error } = this.state;
-    console.log(isVisible);
+    const { isLoading, images, isVisible, error, isModal, modalURL, modalAlt } =
+      this.state;
+
     return (
       <Container>
-        <Searchbar onSubmitApp={this.onHandleSubmit} />
+        {isModal && (
+          <Modal onClick={this.closeModal}>
+            <img src={modalURL.url} alt={modalAlt.tag} />
+          </Modal>
+        )}
+        {!isModal && <Searchbar onSubmitApp={this.onHandleSubmit} />}
         {isLoading && <Loader lOADING={isLoading} />}
-        <ImageGallery images={images} />
+        <ImageGallery images={images} onClick={this.openModal} />
         {isVisible && (
-          <Button onClick={this.onHandelLoadMore} disabled={isLoading}>
+          <Button
+            onClick={this.onHandelLoadMore}
+            disabled={isLoading}
+            type="button"
+          >
             {isLoading ? 'Loading...' : 'Load more'}
           </Button>
         )}

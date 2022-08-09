@@ -3,7 +3,7 @@ export const ImageGalleryItem = ({
   tags,
   webformatURL,
   largeImageURL,
-  onOpenImg,
+  onClick,
 }) => {
   return (
     <ItemImage>
@@ -11,9 +11,9 @@ export const ImageGalleryItem = ({
         <Picture
           src={webformatURL}
           alt={tags}
-          //   onClick={() => {
-          //     onOpenImg(largeImageURL);
-          //   }}
+          onClick={() => {
+            onClick(largeImageURL, tags);
+          }}
           loading="lazy"
         />
       </div>
