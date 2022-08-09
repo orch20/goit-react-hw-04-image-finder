@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
 
 export const ImageGallery = ({ images }) => {
-  console.log('imameGallery:', images);
   return (
     <List>
       {images.map(({ id, webformatURL, largeImageURL, tags }) => (

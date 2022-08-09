@@ -5,13 +5,15 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 import { ToastContainer, toast } from 'react-toastify';
 import { imageService } from '../services/serviceApi.js';
+import styled from 'styled-components';
 
 export class App extends Component {
   state = {
-    isLoading: false,
     query: '',
     page: 1,
     images: [],
+    isLoading: false,
+    isVisible: false,
   };
 
   componentDidUpdate(_, prevState) {
@@ -23,14 +25,16 @@ export class App extends Component {
   getImages = async (query, page) => {
     this.setState({ isLoading: true });
     try {
-      // const { query, page } = this.state;
-      const { hits } = await imageService(query, page);
-      console.log('app:', hits);
+      const { hits, totalHits } = await imageService(query, page);
+      console.log('hits', totalHits);
+      console.log('page', page);
       if (hits.length === 0) {
         toast.warn('Wrong query!', { autoClose: 3000 });
       }
+
       this.setState(prevState => ({
         images: [...prevState.images, ...hits],
+        isVisible: totalHits > 12 * page,
       }));
     } catch (error) {
       console.error(error);
@@ -48,30 +52,41 @@ export class App extends Component {
       query: value,
       page: 1,
       images: [],
-      // isVisible: false,
-      // isEmpty: false,
+      isVisible: false,
+      isEmpty: false,
       error: null,
     });
   };
 
   onHandelLoadMore = () => {
-    console.log('click');
     this.setState(prevState => ({
-      page: prevState + 1,
+      page: prevState.page + 1,
     }));
   };
 
   render() {
-    const { isLoading, images } = this.state;
-    console.log('render app:', images);
+    const { isLoading, images, isVisible, error } = this.state;
+    console.log(isVisible);
     return (
-      <>
+      <Container>
         <Searchbar onSubmitApp={this.onHandleSubmit} />
         {isLoading && <Loader lOADING={isLoading} />}
         <ImageGallery images={images} />
-        <Button onClick={this.onHandelLoadMore}>Load more</Button>
+        {isVisible && (
+          <Button onClick={this.onHandelLoadMore} disabled={isLoading}>
+            {isLoading ? 'Loading...' : 'Load more'}
+          </Button>
+        )}
         <ToastContainer />
-      </>
+        {error && <p textAlign="center">Sorry, {error}</p>}
+      </Container>
     );
   }
 }
+
+const Container = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 16px;
+  padding-bottom: 24px;
+`;
