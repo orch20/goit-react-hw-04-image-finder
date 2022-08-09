@@ -46,13 +46,14 @@ export const Input = styled.input`
 
 export const ButtonSearch = styled.button`
   display: inline-block;
-  width: 48px;
+  width: 68px;
   height: 48px;
   border: 0;
-  background-image: url('https://image.flaticon.com/icons/svg/149/149852.svg');
+  margin: 0 auto;
+  /* background-image: url('https://image.flaticon.com/icons/svg/149/149852.svg');
   background-size: 40%;
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: center; */
   opacity: 0.6;
   transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
