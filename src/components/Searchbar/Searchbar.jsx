@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Header, Form, Input, Button, Label } from './SearchBar.styled';
+import { Header, Form, Input, ButtonSearch, Label } from './SearchBar.styled';
 
 export class Searchbar extends Component {
   state = {
@@ -20,6 +20,9 @@ export class Searchbar extends Component {
       toast.warn('Enter query!', { autoClose: 3000 });
       return;
     }
+    this.setState({
+      searchQuery: '',
+    });
     this.props.onSubmitApp(searchQuery);
   };
 
@@ -27,9 +30,9 @@ export class Searchbar extends Component {
     return (
       <Header>
         <Form onSubmit={this.handleSubmit}>
-          <Button type="submit">
+          <ButtonSearch type="submit">
             <Label title={'Search'} />
-          </Button>
+          </ButtonSearch>
 
           <Input
             type="text"

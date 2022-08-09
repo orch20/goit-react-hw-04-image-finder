@@ -44,12 +44,12 @@ export const Input = styled.input`
   }
 `;
 
-export const Button = styled.button`
+export const ButtonSearch = styled.button`
   display: inline-block;
   width: 48px;
   height: 48px;
   border: 0;
-  /* background-image: url('https://image.flaticon.com/icons/svg/149/149852.svg'); */
+  background-image: url('https://image.flaticon.com/icons/svg/149/149852.svg');
   background-size: 40%;
   background-repeat: no-repeat;
   background-position: center;

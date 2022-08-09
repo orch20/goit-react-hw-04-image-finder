@@ -1,42 +1,75 @@
 import React, { Component } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { Loader } from './Loader/Loader';
-import { ToastContainer } from 'react-toastify';
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Button } from './Button/Button';
+import { ToastContainer, toast } from 'react-toastify';
+import { imageService } from '../services/serviceApi.js';
 
 export class App extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {  };
-  // }
   state = {
-    // picture: null,
-    // loading: false,
-    searchQueryApp: '',
+    isLoading: false,
+    query: '',
+    page: 1,
+    images: [],
   };
 
-  handelFormSubmit = searchQuery => {
-    this.setState({ searchQueryApp: searchQuery });
+  componentDidUpdate(_, prevState) {
+    const { query, page } = this.state;
+    if (prevState.query !== query || prevState.page !== page) {
+      this.getImages(query, page);
+    }
+  }
+  getImages = async (query, page) => {
+    this.setState({ isLoading: true });
+    try {
+      // const { query, page } = this.state;
+      const { hits } = await imageService(query, page);
+      console.log('app:', hits);
+      if (hits.length === 0) {
+        toast.warn('Wrong query!', { autoClose: 3000 });
+      }
+      this.setState(prevState => ({
+        images: [...prevState.images, ...hits],
+      }));
+    } catch (error) {
+      console.error(error);
+      this.setState({ error: error.message });
+    } finally {
+      this.setState({ isLoading: false });
+    }
   };
 
-  // componentDidMount() {
-  //   this.setState({ loading: true });
-  //   setTimeout(() => {
-  //     fetch(
-  //       'https://pixabay.com/api/?key=28032736-ad36f6ce87d03da58a29c5b67&q=yellow+flowers&image_type=photo'
-  //     )
-  //       .then(res => res.json())
-  //       .then(picture => this.setState({ picture }))
-  //       .finally(() => this.setState({ loading: false }));
-  //   }, 1000);
-  // }
+  onHandleSubmit = value => {
+    if (value === this.state.query) {
+      return;
+    }
+    this.setState({
+      query: value,
+      page: 1,
+      images: [],
+      // isVisible: false,
+      // isEmpty: false,
+      error: null,
+    });
+  };
+
+  onHandelLoadMore = () => {
+    console.log('click');
+    this.setState(prevState => ({
+      page: prevState + 1,
+    }));
+  };
 
   render() {
-    const { picture, loading } = this.state;
+    const { isLoading, images } = this.state;
+    console.log('render app:', images);
     return (
       <>
-        <Searchbar onSubmitApp={this.handelFormSubmit} />
-        {loading && <Loader lOADING={loading} />}
-        {/* <div>{picture && <div>hello2</div>}</div> */}
+        <Searchbar onSubmitApp={this.onHandleSubmit} />
+        {isLoading && <Loader lOADING={isLoading} />}
+        <ImageGallery images={images} />
+        <Button onClick={this.onHandelLoadMore}>Load more</Button>
         <ToastContainer />
       </>
     );
