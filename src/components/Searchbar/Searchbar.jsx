@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Header, Form, Input, ButtonSearch, Label } from './SearchBar.styled';
-import { ReactComponent as loopSvg } from '../../icons/loop.svg';
+import { Header, Form, Input, ButtonSearch } from './SearchBar.styled';
+// import { ReactComponent as loopSvg } from '../../icons/loop.svg';
 
 export class Searchbar extends Component {
   state = {
@@ -33,7 +33,7 @@ export class Searchbar extends Component {
         <Form onSubmit={this.handleSubmit}>
           <ButtonSearch type="submit">
             Search
-            <loopSvg width="40" fill="#3f51b5" />
+            {/* <loopSvg width="40" fill="#3f51b5" /> */}
             {/* <Label title={'Search'} /> */}
           </ButtonSearch>
 
