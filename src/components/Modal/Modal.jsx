@@ -1,39 +1,77 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', e => {
-      if (e.code === 'Escape') {
-        this.onCloseModal();
-      }
-    });
-  }
+export const Modal = props => {
+  useEffect(() => {
+    window.addEventListener('keydown', handelKeyDown);
+    return () => window.addEventListener('keydown', handelKeyDown);
+  });
 
-  onCloseModal = () => {
-    this.props.onClick();
+  const handelKeyDown = e => {
+    if (e.code === 'Escape') {
+      onCloseModal();
+    }
   };
 
-  onClickOverlay = e => {
+  const onCloseModal = () => {
+    props.onClick();
+  };
+
+  const onClickOverlay = e => {
     const { currentTarget, target } = e;
-    if (currentTarget === target) this.onCloseModal();
+    if (currentTarget === target) onCloseModal();
   };
 
-  render() {
-    return createPortal(
-      <Overlay onClick={this.onClickOverlay}>
-        <ModalContent>
-          {this.props.children}
-          {/* <img src="" alt="" /> */}
-        </ModalContent>
-      </Overlay>,
-      modalRoot
-    );
-  }
-}
+  return createPortal(
+    <Overlay onClick={onClickOverlay}>
+      <ModalContent>
+        {props.children}
+        {/* <img src="" alt="" /> */}
+      </ModalContent>
+    </Overlay>,
+    modalRoot
+  );
+};
+
+// export class Modal extends Component {
+//   componentDidMount() {
+//     window.addEventListener('keydown', this.handelKeyDown);
+//   }
+
+//   componentWillUnmount() {
+//     window.addEventListener('keydown', this.handelKeyDown);
+//   }
+
+//   handelKeyDown = e => {
+//     if (e.code === 'Escape') {
+//       this.onCloseModal();
+//     }
+//   };
+
+//   onCloseModal = () => {
+//     this.props.onClick();
+//   };
+
+//   onClickOverlay = e => {
+//     const { currentTarget, target } = e;
+//     if (currentTarget === target) this.onCloseModal();
+//   };
+
+//   render() {
+//     return createPortal(
+//       <Overlay onClick={this.onClickOverlay}>
+//         <ModalContent>
+//           {this.props.children}
+//           {/* <img src="" alt="" /> */}
+//         </ModalContent>
+//       </Overlay>,
+//       modalRoot
+//     );
+//   }
+// }
 
 const Overlay = styled.div`
   position: fixed;
