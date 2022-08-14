@@ -62,6 +62,7 @@ export const App = () => {
   };
 
   const openModal = (url, tag) => {
+    console.log(url, tag);
     setIsModal(true);
     setModalURL(url);
     setModalAlt(tag);
@@ -75,7 +76,7 @@ export const App = () => {
     <Container>
       {isModal && (
         <Modal onClick={closeModal}>
-          <img src={modalURL.url} alt={modalAlt.tag} />
+          <img src={modalURL} alt={modalAlt} />
         </Modal>
       )}
       {!isModal && <Searchbar onSubmitApp={onHandleSubmit} />}
